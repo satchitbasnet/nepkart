@@ -15,58 +15,83 @@ export type BackendProduct = {
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
 
 async function http<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    credentials: "include", // Include cookies for session management
-    headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
-    ...init,
-  });
-  
-  // Handle 204 No Content (DELETE responses)
-  if (res.status === 204) {
-    return undefined as T;
-  }
-  
-  // Read response body once
-  const contentType = res.headers.get("content-type");
-  const isJson = contentType && contentType.includes("application/json");
-  
-  let jsonData: any = null;
-  let textData: string = "";
+  const url = `${API_BASE}${path}`;
+  console.log(`[API] ${init?.method || 'GET'} ${url}`);
   
   try {
-    if (isJson) {
-      jsonData = await res.json();
-    } else {
-      textData = await res.text();
-      // Try to parse as JSON even if content-type doesn't say so
-      if (textData) {
-        try {
-          jsonData = JSON.parse(textData);
-        } catch {
-          // Not JSON, keep as text
+    const res = await fetch(url, {
+      credentials: "include", // Include cookies for session management
+      headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
+      ...init,
+    });
+    
+    console.log(`[API] Response status: ${res.status} ${res.statusText} for ${url}`);
+    
+    // Handle 204 No Content (DELETE responses)
+    if (res.status === 204) {
+      return undefined as T;
+    }
+    
+    // Read response body once
+    const contentType = res.headers.get("content-type");
+    const isJson = contentType && contentType.includes("application/json");
+    
+    let jsonData: any = null;
+    let textData: string = "";
+    
+    try {
+      if (isJson) {
+        jsonData = await res.json();
+        console.log(`[API] Response JSON:`, jsonData);
+      } else {
+        textData = await res.text();
+        console.log(`[API] Response text:`, textData.substring(0, 200));
+        // Try to parse as JSON even if content-type doesn't say so
+        if (textData) {
+          try {
+            jsonData = JSON.parse(textData);
+            console.log(`[API] Parsed JSON from text:`, jsonData);
+          } catch {
+            // Not JSON, keep as text
+          }
         }
       }
+    } catch (parseError) {
+      console.error("[API] Error parsing response:", parseError);
+      textData = await res.text().catch(() => "");
     }
-  } catch (parseError) {
-    console.error("Error parsing response:", parseError);
-    textData = await res.text().catch(() => "");
-  }
-  
-  if (!res.ok) {
-    // If we have JSON with a message, use it
-    if (jsonData) {
-      const errorMessage = jsonData.message || jsonData.error || `${res.status} ${res.statusText}`;
-      const error = new Error(errorMessage);
-      (error as any).status = res.status;
-      (error as any).data = jsonData;
-      throw error;
+    
+    if (!res.ok) {
+      // If we have JSON with a message, use it
+      if (jsonData) {
+        const errorMessage = jsonData.message || jsonData.error || `${res.status} ${res.statusText}`;
+        console.error(`[API] Error response:`, errorMessage);
+        const error = new Error(errorMessage);
+        (error as any).status = res.status;
+        (error as any).data = jsonData;
+        throw error;
+      }
+      // Otherwise use text or status text
+      const errorMessage = textData || `${res.status} ${res.statusText}`;
+      console.error(`[API] Error:`, errorMessage);
+      throw new Error(errorMessage);
     }
-    // Otherwise use text or status text
-    const errorMessage = textData || `${res.status} ${res.statusText}`;
-    throw new Error(errorMessage);
+    
+    return jsonData as T;
+  } catch (error: any) {
+    // Handle network errors (backend not running, CORS, etc.)
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      const networkError = new Error(
+        `Failed to connect to backend at ${API_BASE}. ` +
+        `Make sure the backend is running on http://localhost:8080`
+      );
+      console.error("[API] Network error:", networkError.message);
+      throw networkError;
+    }
+    // Re-throw other errors
+    console.error("[API] Request failed:", error);
+    throw error;
   }
-  
-  return jsonData as T;
 }
 
 export const api = {
