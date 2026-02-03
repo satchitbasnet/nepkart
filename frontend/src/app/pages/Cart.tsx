@@ -56,26 +56,31 @@ export default function Cart() {
                   ${item.price.toFixed(2)} each
                 </p>
                 <div className="flex items-center gap-3 mt-3">
-                  <div className="flex items-center border border-gray-300 rounded-lg">
+                  <div className="flex items-center border border-gray-300 rounded-lg" role="group" aria-label="Quantity controls">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="p-2 hover:bg-gray-100 transition"
+                      aria-label={`Decrease quantity of ${item.name}`}
+                      className="p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
                     >
-                      <Minus className="h-4 w-4" />
+                      <Minus className="h-4 w-4" aria-hidden="true" />
                     </button>
-                    <span className="px-4 font-semibold">{item.quantity}</span>
+                    <span className="px-4 font-semibold" aria-label={`Quantity: ${item.quantity}`}>
+                      {item.quantity}
+                    </span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="p-2 hover:bg-gray-100 transition"
+                      aria-label={`Increase quantity of ${item.name}`}
+                      className="p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                   <button
                     onClick={() => removeFromCart(item.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                    aria-label={`Remove ${item.name} from cart`}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition"
                   >
-                    <Trash2 className="h-5 w-5" />
+                    <Trash2 className="h-5 w-5" aria-hidden="true" />
                   </button>
                 </div>
               </div>

@@ -93,12 +93,14 @@ export default function Home() {
           </h2>
 
           {/* Category Filter */}
-          <div className="flex flex-wrap gap-3 mb-8">
+          <div className="flex flex-wrap gap-3 mb-8" role="group" aria-label="Filter products by category">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`px-6 py-2 rounded-lg font-semibold transition ${
+                aria-pressed={selectedCategory === category.id}
+                aria-label={`Filter by ${category.name}`}
+                className={`px-6 py-2 rounded-lg font-semibold transition focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
                   selectedCategory === category.id
                     ? "bg-orange-600 text-white"
                     : "bg-white text-gray-700 border border-gray-300 hover:border-orange-600 hover:text-orange-600"
@@ -111,13 +113,33 @@ export default function Home() {
 
           {/* Products Grid */}
           {loading ? (
-            <div className="py-16 text-center text-gray-600">Loading products…</div>
+            <div 
+              className="py-16 text-center text-gray-600" 
+              role="status" 
+              aria-live="polite"
+              aria-label="Loading products"
+            >
+              Loading products…
+            </div>
           ) : error ? (
-            <div className="py-16 text-center text-red-600">{error}</div>
+            <div 
+              className="py-16 text-center text-red-600" 
+              role="alert" 
+              aria-live="assertive"
+            >
+              <span className="sr-only">Error: </span>
+              {error}
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div 
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              role="list"
+              aria-label={`${filteredProducts.length} products found`}
+            >
               {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <div key={product.id} role="listitem">
+                  <ProductCard product={product} />
+                </div>
               ))}
             </div>
           )}
