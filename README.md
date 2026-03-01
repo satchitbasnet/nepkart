@@ -27,7 +27,7 @@ CURSOR/
 - **Domain Models**: Product, Customer, Order, OrderItem
 - **Inventory Management**: Real-time stock tracking and decrement
 - **Shipping Calculation**: Weight-based shipping cost calculation
-- **Database**: H2 (development) / MySQL (production) support
+- **Database**: Supabase (PostgreSQL) – shared cloud database for all developers
 
 ## Technology Stack
 
@@ -41,8 +41,7 @@ CURSOR/
 - Java 17
 - Spring Boot 3.1.5
 - Spring Data JPA
-- H2 Database (Development)
-- MySQL (Production ready)
+- Supabase (PostgreSQL) – cloud database
 
 ## Getting Started
 
@@ -77,26 +76,33 @@ The frontend will be available at `http://localhost:3000`
 cd backend
 ```
 
-2. Build the project:
+2. Create `.env` from the example (get the database password from your team lead):
 ```bash
-mvn clean install
+# Windows (PowerShell)
+Copy-Item .env.example .env
+# Then edit .env and add SPRING_DATASOURCE_PASSWORD
+
+# Mac/Linux
+cp .env.example .env
+# Then edit .env and add SPRING_DATASOURCE_PASSWORD
 ```
 
-3. Run the application:
+3. Build and run:
 ```bash
-mvn spring-boot:run
+# Windows (PowerShell)
+.\run-with-postgres.ps1
+
+# Mac/Linux
+chmod +x run.sh
+./run.sh
 ```
 
-The backend API will be available at `http://localhost:8080`
+The backend API will be available at `http://localhost:8081`. The app uses **Supabase** (PostgreSQL) by default—all developers connect to the same shared database.
 
 ### Access Points
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8080/api
-- **H2 Console**: http://localhost:8080/h2-console
-  - JDBC URL: `jdbc:h2:mem:nepkartdb`
-  - Username: `sa`
-  - Password: (leave empty)
+- **Frontend**: http://localhost:5173 (or 5174, 5175…)
+- **Backend API**: http://localhost:8081/api
 
 ## API Endpoints
 
@@ -184,10 +190,10 @@ The backend API will be available at `http://localhost:8080`
 
 ## Development Notes
 
-- The frontend uses mock data initially but is structured to connect to the backend API
-- The backend initializes sample products on first run
+- The frontend connects to the backend API
+- The backend initializes sample products on first run (when DB is empty)
 - CORS is configured to allow frontend-backend communication
-- The application uses H2 in-memory database for development
+- The application uses **Supabase (PostgreSQL)** by default—no local database setup
 
 ## Future Enhancements
 

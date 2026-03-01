@@ -12,7 +12,7 @@ export type BackendProduct = {
   imageUrl?: string | null;
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/api";
 
 async function http<T>(path: string, init?: RequestInit): Promise<T> {
   const url = `${API_BASE}${path}`;
@@ -83,7 +83,7 @@ async function http<T>(path: string, init?: RequestInit): Promise<T> {
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       const networkError = new Error(
         `Failed to connect to backend at ${API_BASE}. ` +
-        `Make sure the backend is running on http://localhost:8080`
+        `Make sure the backend is running on http://localhost:8081`
       );
       console.error("[API] Network error:", networkError.message);
       throw networkError;
@@ -161,11 +161,9 @@ export const api = {
       }),
   },
   auth: {
-    login: async (username: string, password: string) => {
+    adminLogin: async (username: string, password: string) => {
       try {
-        console.log("Calling login API:", `${API_BASE}/auth/login`);
-        // Special handling for login - 401 is a valid response
-        const res = await fetch(`${API_BASE}/auth/login`, {
+        const res = await fetch(`${API_BASE}/auth/admin/login`, {
           credentials: "include",
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -211,21 +209,55 @@ export const api = {
         
         // Return the JSON response even for 401 (unauthorized)
         // The calling code will check result.success
-        return jsonData as { success: boolean; message: string; sessionId?: string };
+        return jsonData as { success: boolean; message: string };
       } catch (error: any) {
-        console.error("Login API call failed:", error);
-        // Handle network errors
         if (error.name === 'TypeError' && error.message.includes('fetch')) {
-          throw new Error("Cannot connect to server. Please make sure the backend is running on http://localhost:8080");
+          throw new Error("Cannot connect to server. Please make sure the backend is running on http://localhost:8081");
         }
         throw error;
       }
     },
+    customerRegister: (data: { firstName: string; lastName: string; email: string; password: string }) =>
+      http<{ success: boolean; message: string }>(`/auth/customer/register`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    customerLogin: (email: string, password: string) =>
+      http<{ success: boolean; message: string; customer?: { id: number; email: string; firstName: string; lastName: string } }>(`/auth/customer/login`, {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      }),
+    forgotPassword: (email: string) =>
+      http<{ success: boolean; message: string; token?: string }>(`/auth/customer/forgot-password`, {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      }),
+    resetPassword: (email: string, token: string, newPassword: string) =>
+      http<{ success: boolean; message: string }>(`/auth/customer/reset-password`, {
+        method: "POST",
+        body: JSON.stringify({ email, token, newPassword }),
+      }),
     logout: () =>
       http<{ success: boolean; message: string }>(`/auth/logout`, {
         method: "POST",
       }),
-    check: () => http<{ authenticated: boolean; username?: string }>(`/auth/check`),
+    check: () => http<{ authenticated: boolean; userType?: string; username?: string; customerId?: number; customerEmail?: string; customerName?: string }>(`/auth/check`),
+  },
+  cart: {
+    get: () => http<{ items: Array<{ productId: number; quantity: number; product: BackendProduct & { stock: number } }> }>(`/cart`),
+    sync: (productQuantities: Record<number, number>) =>
+      http<{ items: any[] }>(`/cart`, {
+        method: "POST",
+        body: JSON.stringify(productQuantities),
+      }),
+  },
+  customers: {
+    list: () => http<Array<{ id: number; firstName: string; lastName: string; email: string; isActive: boolean; createdAt: string }>>(`/customers`),
+    setActive: (id: number, active: boolean) =>
+      http<{ success: boolean }>(`/customers/${id}/active`, {
+        method: "PUT",
+        body: JSON.stringify({ active }),
+      }),
   },
 };
 

@@ -46,6 +46,16 @@ export function AdminHeader() {
               Order Received
             </Link>
             <Link
+              to="/admin/customers"
+              className={`px-4 py-2 rounded-lg font-semibold transition ${
+                isActive("/admin/customers")
+                  ? "bg-orange-600 text-white"
+                  : "text-gray-700 hover:text-orange-600 hover:bg-orange-50"
+              }`}
+            >
+              Customers
+            </Link>
+            <Link
               to="/"
               className="px-4 py-2 text-gray-600 hover:text-orange-600 transition text-sm"
             >

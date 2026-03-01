@@ -2,7 +2,7 @@ import { useState, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/app/contexts/AuthContext";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/api";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -10,7 +10,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [backendStatus, setBackendStatus] = useState<"checking" | "connected" | "disconnected">("checking");
-  const { login, setAuthenticated } = useAuth();
+  const { adminLogin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,94 +38,10 @@ export default function Login() {
         return;
       }
       
-      console.log("Submitting login form:", { username: trimmedUsername, passwordLength: trimmedPassword.length });
-      console.log("API Base URL:", API_BASE);
-      
-      // Call API directly first to see the response
-      const loginUrl = `${API_BASE}/auth/login`;
-      console.log("Making login request to:", loginUrl);
-      
-      const res = await fetch(loginUrl, {
-        credentials: "include",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: trimmedUsername, password: trimmedPassword }),
-      });
-      
-      console.log("Response status:", res.status, res.statusText);
-      console.log("Response headers:", Object.fromEntries(res.headers.entries()));
-      
-      const responseText = await res.text();
-      console.log("Response text:", responseText);
-      
-      let responseData: any = null;
-      try {
-        responseData = JSON.parse(responseText);
-        console.log("Parsed response data:", responseData);
-      } catch (parseErr) {
-        console.error("Failed to parse JSON:", parseErr);
-        setError(`Server returned invalid response: ${responseText.substring(0, 100)}`);
-        setLoading(false);
-        return;
-      }
-      
-      // Check if login was successful
-      if (responseData && responseData.success === true) {
-        console.log("Login successful! Response:", responseData);
-        // Update auth context state directly (no need to call API again)
-        setAuthenticated(trimmedUsername);
-        console.log("AuthContext updated, navigating to admin panel");
-        navigate("/admin/inventory");
-        return; // Exit early on success
-      } else {
-        // Login failed - show the message from backend
-        const errorMsg = responseData?.message || responseData?.error || "Invalid username or password";
-        console.log("Login failed. Response data:", responseData);
-        console.log("Error message:", errorMsg);
-        setError(errorMsg);
-      }
+      await adminLogin(trimmedUsername, trimmedPassword);
+      navigate("/admin/inventory");
     } catch (err: any) {
-      console.error("Login error caught:", err);
-      console.error("Error type:", typeof err);
-      console.error("Error name:", err?.name);
-      console.error("Error message:", err?.message);
-      console.error("Error keys:", Object.keys(err || {}));
-      console.error("Error string:", String(err));
-      console.error("Error toString:", err?.toString?.());
-      
-      let errorMessage = "Login failed. Please try again.";
-      
-      // Handle "No message available" specifically
-      if (err?.message === "No message available" || err?.message === "" || !err?.message) {
-        // Check if we have response data with a message
-        if (err?.data?.message) {
-          errorMessage = err.data.message;
-        } else {
-          errorMessage = "Invalid username or password. Please verify:\nUsername: admin\nPassword: nepkart2026";
-        }
-      } else if (err?.message) {
-        errorMessage = err.message;
-      } else if (typeof err === 'string') {
-        errorMessage = err;
-      } else if (err?.toString) {
-        const errStr = err.toString();
-        if (errStr && errStr !== "[object Object]" && !errStr.includes("No message available")) {
-          errorMessage = errStr;
-        }
-      }
-      
-      // Network error
-      if (err?.name === 'TypeError' && err.message?.includes('fetch')) {
-        errorMessage = "Cannot connect to server. Please make sure the backend is running on http://localhost:8080";
-      }
-      
-      // Final fallback
-      if (errorMessage === "Login failed. Please try again." || errorMessage.includes("No message available")) {
-        errorMessage = "Invalid username or password. Please verify:\nUsername: admin\nPassword: nepkart2026";
-      }
-      
-      console.log("Final error message to display:", errorMessage);
-      setError(errorMessage);
+      setError(err?.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -159,7 +75,7 @@ export default function Login() {
         {backendStatus === "disconnected" && (
           <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg mb-6">
             <p className="font-semibold">⚠️ Backend Not Connected</p>
-            <p className="text-sm mt-1">Cannot reach the backend server. Please make sure it's running on port 8080.</p>
+            <p className="text-sm mt-1">Cannot reach the backend server. Please make sure it's running on port 8081.</p>
           </div>
         )}
 

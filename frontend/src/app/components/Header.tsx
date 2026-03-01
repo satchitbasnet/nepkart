@@ -1,17 +1,19 @@
 import { Link } from "react-router";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, LogOut } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 export function Header() {
   const { totalItems } = useCart();
+  const { userType, customerName, logout } = useAuth();
 
   return (
     <header className="bg-white border-b sticky top-0 z-50" role="banner">
       <div className="container mx-auto px-4 py-4">
-        <nav className="flex items-center justify-between" aria-label="Main navigation">
+        <nav className="flex items-center justify-between gap-4" aria-label="Main navigation">
           <Link 
             to="/" 
-            className="flex items-center focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded"
+            className="flex items-center flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded"
             aria-label="NEPKART home"
           >
             <img
@@ -20,6 +22,33 @@ export function Header() {
               className="h-14 w-auto"
             />
           </Link>
+
+          <div className="flex-1 flex justify-center">
+            {userType === "customer" && customerName && (
+              <span className="text-gray-700 font-medium">
+                Welcome, {customerName}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-4 flex-shrink-0">
+            {userType === "customer" ? (
+              <button
+                  onClick={() => logout()}
+                  className="flex items-center gap-1 text-sm text-gray-600 hover:text-orange-600"
+                  aria-label="Log out"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+            ) : (
+              <Link
+                to="/login"
+                className="text-sm font-semibold text-orange-600 hover:text-orange-700"
+              >
+                Login
+              </Link>
+            )}
 
           <Link
             to="/cart"
@@ -37,6 +66,7 @@ export function Header() {
               </span>
             )}
           </Link>
+          </div>
         </nav>
       </div>
     </header>

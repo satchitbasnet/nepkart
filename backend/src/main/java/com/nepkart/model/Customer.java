@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,24 +30,29 @@ public class Customer {
     @Email(message = "Email should be valid")
     private String email;
     
-    @Column(nullable = false)
-    @NotBlank(message = "Phone is required")
+    @Column(name = "password_hash", length = 255)
+    @JsonIgnore
+    private String passwordHash;  // null for guest checkout customers
+    
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+    
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+    
+    @Column
     private String phone;
     
-    @Column(nullable = false)
-    @NotBlank(message = "Address is required")
+    @Column
     private String address;
     
-    @Column(nullable = false)
-    @NotBlank(message = "City is required")
+    @Column
     private String city;
     
-    @Column(nullable = false)
-    @NotBlank(message = "State is required")
+    @Column
     private String state;
     
-    @Column(name = "zip_code", nullable = false)
-    @NotBlank(message = "ZIP code is required")
+    @Column(name = "zip_code")
     private String zipCode;
     
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -55,6 +61,13 @@ public class Customer {
     
     // Constructors
     public Customer() {
+    }
+    
+    public Customer(String firstName, String lastName, String email, String passwordHash) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.passwordHash = passwordHash;
     }
     
     public Customer(String firstName, String lastName, String email, String phone,
@@ -140,6 +153,30 @@ public class Customer {
     
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+    
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+    
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+    
+    public boolean isActive() {
+        return isActive;
+    }
+    
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
     
     public List<Order> getOrders() {

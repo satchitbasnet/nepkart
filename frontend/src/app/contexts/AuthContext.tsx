@@ -1,11 +1,19 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { api } from "@/app/services/api";
 
+export type UserType = "admin" | "customer" | null;
+
 interface AuthContextType {
+  userType: UserType;
   isAuthenticated: boolean;
   username: string | null;
-  login: (username: string, password: string) => Promise<boolean>;
-  setAuthenticated: (username: string) => void; // Direct state update method
+  customerId: number | null;
+  customerEmail: string | null;
+  customerName: string | null;
+  adminLogin: (username: string, password: string) => Promise<boolean>;
+  customerLogin: (email: string, password: string) => Promise<boolean>;
+  customerRegister: (data: { firstName: string; lastName: string; email: string; password: string }) => Promise<void>;
+  setAuthenticated: (username: string) => void;
   logout: () => Promise<void>;
   loading: boolean;
 }
@@ -13,9 +21,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userType, setUserType] = useState<UserType>(null);
   const [username, setUsername] = useState<string | null>(null);
+  const [customerId, setCustomerId] = useState<number | null>(null);
+  const [customerEmail, setCustomerEmail] = useState<string | null>(null);
+  const [customerName, setCustomerName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const isAuthenticated = userType !== null;
 
   useEffect(() => {
     checkAuth();
@@ -24,76 +37,114 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuth = async () => {
     try {
       const result = await api.auth.check();
-      setIsAuthenticated(result.authenticated);
-      setUsername(result.username || null);
-    } catch (error) {
-      setIsAuthenticated(false);
+      if (result.authenticated) {
+        if (result.userType === "admin") {
+          setUserType("admin");
+          setUsername(result.username || null);
+          setCustomerId(null);
+          setCustomerEmail(null);
+          setCustomerName(null);
+        } else if (result.userType === "customer") {
+          setUserType("customer");
+          setUsername(null);
+          setCustomerId(result.customerId ?? null);
+          setCustomerEmail(result.customerEmail ?? null);
+          setCustomerName(result.customerName ?? null);
+        }
+      } else {
+        setUserType(null);
+        setUsername(null);
+        setCustomerId(null);
+        setCustomerEmail(null);
+        setCustomerName(null);
+      }
+    } catch {
+      setUserType(null);
       setUsername(null);
+      setCustomerId(null);
+      setCustomerEmail(null);
+      setCustomerName(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const login = async (username: string, password: string): Promise<boolean> => {
-    try {
-      console.log("AuthContext: Attempting login for:", username);
-      const result = await api.auth.login(username, password);
-      console.log("AuthContext: Login result:", result);
-      
-      if (result && result.success === true) {
-        console.log("AuthContext: Setting authenticated state");
-        setIsAuthenticated(true);
-        setUsername(username);
-        return true;
-      }
-      
-      // If result exists but success is false, create an error with the message
-      const errorMessage = result?.message || result?.error || "Invalid username or password";
-      console.log("AuthContext: Creating error with message:", errorMessage);
-      const error: any = new Error(errorMessage);
-      error.data = result;
-      error.status = 401; // Unauthorized
-      throw error;
-    } catch (error: any) {
-      console.error("AuthContext: Login error:", error);
-      console.error("AuthContext: Error details:", {
-        message: error?.message,
-        name: error?.name,
-        stack: error?.stack,
-        data: error?.data
-      });
-      
-      // If error message is "No message available", provide a better message
-      if (error?.message === "No message available" || !error?.message) {
-        const betterError: any = new Error("Invalid username or password");
-        betterError.data = error?.data;
-        betterError.status = error?.status;
-        throw betterError;
-      }
-      
-      // Re-throw to let Login component handle the error message
-      throw error;
+  const adminLogin = async (username: string, password: string): Promise<boolean> => {
+    const result = await api.auth.adminLogin(username, password);
+    if (result?.success) {
+      setUserType("admin");
+      setUsername(username);
+      setCustomerId(null);
+      setCustomerEmail(null);
+      setCustomerName(null);
+      return true;
+    }
+    const err: any = new Error(result?.message || "Invalid credentials");
+    err.status = 401;
+    throw err;
+  };
+
+  const customerLogin = async (email: string, password: string): Promise<boolean> => {
+    const result = await api.auth.customerLogin(email, password);
+    if (result?.success) {
+      setUserType("customer");
+      setUsername(null);
+      setCustomerId(result.customer?.id ?? null);
+      setCustomerEmail(result.customer?.email ?? email);
+      setCustomerName(result.customer ? `${result.customer.firstName} ${result.customer.lastName}` : null);
+      return true;
+    }
+    const err: any = new Error(result?.message || "Invalid email or password");
+    err.status = 401;
+    throw err;
+  };
+
+  const customerRegister = async (data: { firstName: string; lastName: string; email: string; password: string }) => {
+    const result = await api.auth.customerRegister(data);
+    if (!result?.success) {
+      throw new Error(result?.message || "Registration failed");
     }
   };
 
   const setAuthenticated = (username: string) => {
-    setIsAuthenticated(true);
+    setUserType("admin");
     setUsername(username);
+    setCustomerId(null);
+    setCustomerEmail(null);
+    setCustomerName(null);
   };
 
   const logout = async () => {
     try {
       await api.auth.logout();
-    } catch (error) {
-      // Ignore logout errors
+    } catch {
+      // ignore
     } finally {
-      setIsAuthenticated(false);
+      setUserType(null);
       setUsername(null);
+      setCustomerId(null);
+      setCustomerEmail(null);
+      setCustomerName(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, username, login, setAuthenticated, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        userType,
+        isAuthenticated,
+        username,
+        customerId,
+        customerEmail,
+        customerName,
+        adminLogin,
+        customerLogin,
+        customerRegister,
+        setAuthenticated,
+        logout,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
