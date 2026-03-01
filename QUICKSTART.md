@@ -9,6 +9,7 @@
 
 ### 1. Start the Backend (Java Spring Boot)
 
+**Option A – Supabase (shared cloud DB):**
 ```bash
 cd backend
 cp .env.example .env
@@ -19,6 +20,13 @@ cp .env.example .env
 
 # Mac/Linux
 ./run.sh
+```
+
+**Option B – H2 (local, no setup, use when Supabase is unreachable):**
+```bash
+cd backend
+.\run-h2.ps1   # Windows
+# or: mvn spring-boot:run   # (without .env loaded)
 ```
 
 **Supabase password:** `nepkart9841`
