@@ -5,6 +5,7 @@ import { useCart } from "@/app/context/CartContext";
 import { ShoppingCart, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/app/services/api";
+import { getProductImageUrl } from "@/app/utils/imageUrl";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -95,12 +96,12 @@ export default function ProductDetail() {
         {/* Image */}
         <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
           <img
-            src={product.image || "/placeholder-product.svg"}
+            src={getProductImageUrl(product.image)}
             alt={product.name}
             className="w-full h-full object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = "/placeholder-product.svg";
+              target.src = getProductImageUrl(null);
             }}
           />
         </div>

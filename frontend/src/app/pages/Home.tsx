@@ -59,7 +59,7 @@ export default function Home() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img 
-            src="/himalayan-banner.png" 
+            src="/himalayan-banner.jpeg" 
             alt="Himalayan mountains" 
             className="w-full h-full object-cover object-center"
             loading="eager"

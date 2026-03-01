@@ -3,6 +3,7 @@ import { ShoppingCart } from "lucide-react";
 import { Product } from "@/app/data/products";
 import { useCart } from "@/app/context/CartContext";
 import { toast } from "sonner";
+import { getProductImageUrl } from "@/app/utils/imageUrl";
 
 interface ProductCardProps {
   product: Product;
@@ -29,13 +30,13 @@ export function ProductCard({ product }: ProductCardProps) {
       >
         <div className="relative aspect-square overflow-hidden bg-gray-100">
           <img
-            src={product.image || "/placeholder-product.svg"}
+            src={getProductImageUrl(product.image)}
             alt={`${product.name} - ${product.description || 'Nepalese product'}`}
             className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
             loading="lazy"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = "/placeholder-product.svg";
+              target.src = getProductImageUrl(null);
             }}
           />
           {!product.inStock && (

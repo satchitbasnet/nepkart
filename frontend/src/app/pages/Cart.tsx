@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useCart } from "@/app/context/CartContext";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
+import { getProductImageUrl } from "@/app/utils/imageUrl";
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
@@ -41,9 +42,13 @@ export default function Cart() {
               className="flex gap-4 bg-white p-4 rounded-lg border border-gray-200"
             >
               <img
-                src={item.image}
+                src={getProductImageUrl(item.image)}
                 alt={item.name}
                 className="w-24 h-24 object-cover rounded-lg"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = getProductImageUrl(null);
+                }}
               />
               <div className="flex-1">
                 <Link

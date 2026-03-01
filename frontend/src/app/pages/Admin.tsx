@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Product } from "@/app/data/products";
 import { api } from "@/app/services/api";
+import { getProductImageUrl } from "@/app/utils/imageUrl";
 
 type ProductDraft = {
   sku: string;
@@ -389,12 +390,12 @@ export default function Admin() {
                 {newProduct.imageUrl && (
                   <div className="w-24 h-24 border border-gray-300 rounded-lg overflow-hidden bg-gray-100">
                     <img
-                      src={newProduct.imageUrl}
+                      src={getProductImageUrl(newProduct.imageUrl)}
                       alt="Preview"
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder-product.svg";
+                        target.src = getProductImageUrl(null);
                       }}
                     />
                   </div>
@@ -465,12 +466,12 @@ export default function Admin() {
                       <div className="flex flex-col gap-1">
                         <div className="w-12 h-12 border border-gray-300 rounded overflow-hidden bg-gray-100">
                           <img
-                            src={d.imageUrl}
+                            src={getProductImageUrl(d.imageUrl)}
                             alt={d.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              target.src = "/placeholder-product.svg";
+                              target.src = getProductImageUrl(null);
                             }}
                           />
                         </div>

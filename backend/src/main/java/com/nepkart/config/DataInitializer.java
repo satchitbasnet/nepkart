@@ -24,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(0.1), "Kathmandu, Nepal"
             );
             product1.setDescription("Authentic Nepali instant noodles loved by millions.");
-            product1.setImageUrl("/placeholder-product.svg");
+            product1.setImageUrl("/products/wai-wai.jpg");
             productRepository.save(product1);
             
             Product product2 = new Product(
@@ -33,7 +33,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(0.2), "Himalayan Region, Nepal"
             );
             product2.setDescription("Traditional hard cheese from the Himalayas.");
-            product2.setImageUrl("/placeholder-product.svg");
+            product2.setImageUrl("/products/churpi.jpg");
             productRepository.save(product2);
             
             Product product3 = new Product(
@@ -42,7 +42,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(0.3), "Nepal"
             );
             product3.setDescription("Fermented leafy vegetable, a staple in Nepali cuisine.");
-            product3.setImageUrl("/placeholder-product.svg");
+            product3.setImageUrl("/products/gundruk.jpg");
             productRepository.save(product3);
             
             Product product4 = new Product(
@@ -51,7 +51,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(0.15), "Kathmandu, Nepal"
             );
             product4.setDescription("Spice mix for authentic momos.");
-            product4.setImageUrl("/placeholder-product.svg");
+            product4.setImageUrl("/products/momomasala.jpg");
             productRepository.save(product4);
             
             Product product5 = new Product(
@@ -60,7 +60,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(0.1), "Nepal"
             );
             product5.setDescription("Traditional Nepali cap, handwoven with intricate patterns.");
-            product5.setImageUrl("/placeholder-product.svg");
+            product5.setImageUrl("/products/topi.jpg");
             productRepository.save(product5);
             
             Product product6 = new Product(
@@ -69,7 +69,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(2.5), "Patan, Nepal"
             );
             product6.setDescription("Handcrafted copper water jug.");
-            product6.setImageUrl("/placeholder-product.svg");
+            product6.setImageUrl("/products/jug.jpg");
             productRepository.save(product6);
             
             Product product7 = new Product(
@@ -78,7 +78,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(1.2), "Tibet/Nepal"
             );
             product7.setDescription("Traditional Tibetan prayer wheel. Handcrafted with intricate details.");
-            product7.setImageUrl("/placeholder-product.svg");
+            product7.setImageUrl("/products/praying-wheel.jpg");
             productRepository.save(product7);
             
             Product product8 = new Product(
@@ -87,7 +87,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(5.0), "Terai, Nepal"
             );
             product8.setDescription("Premium Basmati rice from the Terai region.");
-            product8.setImageUrl("/placeholder-product.svg");
+            product8.setImageUrl("/products/basmatirice.jpg");
             productRepository.save(product8);
             
             Product product9 = new Product(
@@ -96,7 +96,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(2.8), "Patan, Nepal"
             );
             product9.setDescription("Handcrafted brass panas lamps. Traditional Nepali design with intricate patterns. Perfect for home decoration.");
-            product9.setImageUrl("/placeholder-product.svg");
+            product9.setImageUrl("/products/lamps.jpg");
             productRepository.save(product9);
             
             Product product10 = new Product(
@@ -105,7 +105,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(1.5), "Tibet/Nepal"
             );
             product10.setDescription("Set of three handcrafted Tibetan singing bowls. Each bowl produces a unique harmonic sound. Used for meditation and decoration.");
-            product10.setImageUrl("/placeholder-product.svg");
+            product10.setImageUrl("/products/singing-bowl.jpg");
             productRepository.save(product10);
             
             Product product11 = new Product(
@@ -114,7 +114,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(3.5), "Tibet/Nepal"
             );
             product11.setDescription("Authentic Tibetan handwoven rug. Beautiful traditional patterns and colors. Adds warmth and cultural elegance to any room.");
-            product11.setImageUrl("/placeholder-product.svg");
+            product11.setImageUrl("/products/rug.jpg");
             productRepository.save(product11);
             
             Product product12 = new Product(
@@ -123,7 +123,7 @@ public class DataInitializer implements CommandLineRunner {
                 BigDecimal.valueOf(4.2), "Kathmandu, Nepal"
             );
             product12.setDescription("Vintage-style peacock window frame. Intricate woodwork featuring traditional Nepali peacock motifs. A stunning decorative piece.");
-            product12.setImageUrl("/placeholder-product.svg");
+            product12.setImageUrl("/products/window.jpg");
             productRepository.save(product12);
         }
     }
