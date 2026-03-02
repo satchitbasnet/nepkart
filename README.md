@@ -2,6 +2,10 @@
 
 NEPKART is a full-stack e-commerce application designed to bridge the gap for the Nepali diaspora and Himalayan culture enthusiasts in the USA. The platform manages authentic Nepali products with real-time inventory tracking to prevent selling out-of-stock items.
 
+## Documentation
+
+- **[Use Case Diagrams](docs/USE_CASE_DIAGRAMS.md)** – Frontend and backend use cases for Customer and Admin
+
 ## Project Structure
 
 ```

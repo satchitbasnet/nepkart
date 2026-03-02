@@ -1,0 +1,70 @@
+@startuml NEPKART-Backend-UseCases
+!theme plain
+skinparam actorStyle awesome
+skinparam useCase {
+  BackgroundColor LightGreen
+  BorderColor DarkGreen
+}
+
+left to right direction
+
+actor "Customer\n(via Frontend)" as Customer
+actor "Admin\n(via Frontend)" as Admin
+
+rectangle "NEPKART Backend (Spring Boot API)" {
+  usecase "Admin Login" as B1
+  usecase "Customer Register" as B2
+  usecase "Customer Login" as B3
+  usecase "Logout" as B4
+  usecase "Forgot Password" as B5
+  usecase "Reset Password" as B6
+  usecase "List Products" as B8
+  usecase "Get Product by ID" as B9
+  usecase "Get Low Stock Products" as B10
+  usecase "Get Out of Stock Products" as B11
+  usecase "Create Product" as B12
+  usecase "Update Product" as B13
+  usecase "Delete Product" as B14
+  usecase "List Orders" as B15
+  usecase "Get Order by ID" as B16
+  usecase "Create Order" as B17
+  usecase "Update Order Status" as B18
+  usecase "Delete Order" as B19
+  usecase "Get Cart" as B20
+  usecase "Sync Cart" as B21
+  usecase "List Customers" as B22
+  usecase "Set Customer Active/Inactive" as B23
+  usecase "Calculate Shipping" as B24
+  usecase "Get Tax Rate" as B25
+}
+
+Customer --> B2
+Customer --> B3
+Customer --> B4
+Customer --> B5
+Customer --> B6
+Customer --> B8
+Customer --> B9
+Customer --> B20
+Customer --> B21
+Customer --> B17
+Customer --> B24
+Customer --> B25
+
+Admin --> B1
+Admin --> B4
+Admin --> B8
+Admin --> B9
+Admin --> B10
+Admin --> B11
+Admin --> B12
+Admin --> B13
+Admin --> B14
+Admin --> B15
+Admin --> B16
+Admin --> B18
+Admin --> B19
+Admin --> B22
+Admin --> B23
+
+@enduml
