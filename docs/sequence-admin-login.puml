@@ -1,0 +1,19 @@
+@startuml Admin-Login
+actor Admin
+participant "Frontend" as F
+participant "Backend API" as B
+
+Admin -> F: Enter username & password
+Admin -> F: Submit
+F -> B: POST /auth/admin/login
+B -> B: Verify credentials (admin/nepkart2026)
+alt Invalid
+    B --> F: 401 Unauthorized
+    F --> Admin: Show error
+else Valid
+    B -> B: Set session (admin=true)
+    B --> F: 200 Success
+    F -> F: Update AuthContext
+    F --> Admin: Redirect to /admin
+end
+@enduml

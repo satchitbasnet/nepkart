@@ -38,7 +38,7 @@ public class DataInitializer implements CommandLineRunner {
             
             Product product3 = new Product(
                 "NEP-FOOD-003", "Gundruk", "Food",
-                BigDecimal.valueOf(6.99), 0, 15,
+                BigDecimal.valueOf(6.99), 45, 15,
                 BigDecimal.valueOf(0.3), "Nepal"
             );
             product3.setDescription("Fermented leafy vegetable, a staple in Nepali cuisine.");

@@ -1,0 +1,25 @@
+@startuml Customer-Login
+actor Customer
+participant "Frontend" as F
+participant "Backend API" as B
+database "Supabase" as DB
+
+Customer -> F: Enter email & password
+Customer -> F: Submit
+F -> B: POST /auth/customer/login
+B -> DB: findByEmail
+DB --> B: Customer
+alt Invalid or inactive
+    B --> F: 401 Unauthorized
+    F --> Customer: Show error
+else Valid
+    B -> B: Verify password (BCrypt)
+    B -> B: Set session (customerId, email, name)
+    B --> F: 200 Success + customer info
+    F -> F: Update AuthContext
+    F -> B: GET /cart
+    B -> DB: Get cart items
+    B --> F: Cart items
+    F --> Customer: Redirect home, "Welcome, [name]"
+end
+@enduml

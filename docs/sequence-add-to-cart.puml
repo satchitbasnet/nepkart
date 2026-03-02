@@ -1,0 +1,17 @@
+@startuml Add-To-Cart
+actor Customer
+participant "Frontend" as F
+participant "Backend API" as B
+database "Supabase" as DB
+
+Customer -> F: Click Add to Cart
+F -> F: Update local cart state
+F -> B: POST /cart (sync quantities)
+note right: Session cookie included
+B -> B: Get customerId from session
+B -> DB: Upsert CartItem records
+DB --> B: OK
+B -> B: Get cart
+B --> F: Updated cart items
+F --> Customer: Show updated cart badge
+@enduml

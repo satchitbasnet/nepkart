@@ -1,10 +1,7 @@
-# Run backend with H2 (no Supabase - use when cloud DB is unreachable)
-# Clears any postgres env vars so H2 is used
+# Run backend with H2 (fallback when Supabase is unreachable)
+# Data persists in backend/data/ but use Supabase (run.ps1) for long-term
 
-$env:SPRING_DATASOURCE_URL = $null
-$env:SPRING_DATASOURCE_USERNAME = $null
-$env:SPRING_DATASOURCE_PASSWORD = $null
-$env:SPRING_PROFILES_ACTIVE = $null
+$env:SPRING_PROFILES_ACTIVE = "h2"
 
-Write-Host "Starting backend with H2 (local database)..." -ForegroundColor Green
+Write-Host "Starting backend with H2 (local fallback)..." -ForegroundColor Yellow
 mvn spring-boot:run

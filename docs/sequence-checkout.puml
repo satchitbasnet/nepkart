@@ -1,0 +1,21 @@
+@startuml Checkout
+actor Customer
+participant "Frontend" as F
+participant "Backend API" as B
+database "Supabase" as DB
+
+Customer -> F: Fill shipping details
+Customer -> F: Click Place Order
+F -> B: POST /shipping/calculate
+B --> F: Shipping cost
+F -> B: GET /tax/rate
+B --> F: Tax rate
+F -> B: POST /orders (customer, productQuantities)
+B -> DB: Find or create Customer
+B -> DB: Create Order + OrderItems
+B -> DB: Decrement product stock
+DB --> B: OK
+B --> F: Order created
+F -> F: Clear cart
+F --> Customer: Show order confirmation
+@enduml

@@ -9,27 +9,22 @@
 
 ### 1. Start the Backend (Java Spring Boot)
 
-**Option A – Supabase (shared cloud DB):**
 ```bash
 cd backend
+# First time only: copy .env.example to .env and set password
 cp .env.example .env
-# Edit .env and set SPRING_DATASOURCE_PASSWORD=nepkart9841
+# Edit .env: SPRING_DATASOURCE_PASSWORD=nepkart9841
 
 # Windows
-.\run-with-postgres.ps1
+.\run.ps1
 
 # Mac/Linux
 ./run.sh
 ```
 
-**Option B – H2 (local, no setup, use when Supabase is unreachable):**
-```bash
-cd backend
-.\run-h2.ps1   # Windows
-# or: mvn spring-boot:run   # (without .env loaded)
-```
+**Supabase password:** `nepkart9841` – data persists across restarts.
 
-**Supabase password:** `nepkart9841`
+**If Supabase is unreachable:** run `.\run-h2.ps1` for local H2 (data in `backend/data/`).
 
 The backend will start on `http://localhost:8081`
 
@@ -75,6 +70,7 @@ The backend automatically initializes with 8 sample products on first run:
 ### Backend won't start
 - Ensure Java 17+ is installed: `java -version`
 - Create `backend/.env` from `.env.example` and set `SPRING_DATASOURCE_PASSWORD=nepkart9841`
+- If Supabase is unreachable: restore project at [supabase.com/dashboard](https://supabase.com/dashboard) (free tier pauses after inactivity)
 - Check if port 8081 is available
 
 ### Frontend won't start

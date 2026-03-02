@@ -5,6 +5,7 @@ NEPKART is a full-stack e-commerce application designed to bridge the gap for th
 ## Documentation
 
 - **[Use Case Diagrams](docs/USE_CASE_DIAGRAMS.md)** – Frontend and backend use cases for Customer and Admin
+- **[Sequence Diagrams](docs/SEQUENCE_DIAGRAMS.md)** – Sign up, login, cart, checkout, admin flows
 
 ## Project Structure
 
@@ -80,28 +81,22 @@ The frontend will be available at `http://localhost:3000`
 cd backend
 ```
 
-2. Create `.env` from the example (get the database password from your team lead):
+2. Create `.env` from the example (password in QUICKSTART.md):
 ```bash
-# Windows (PowerShell)
-Copy-Item .env.example .env
-# Then edit .env and add SPRING_DATASOURCE_PASSWORD
-
-# Mac/Linux
 cp .env.example .env
-# Then edit .env and add SPRING_DATASOURCE_PASSWORD
+# Edit .env: SPRING_DATASOURCE_PASSWORD=nepkart9841
 ```
 
-3. Build and run:
+3. Run:
 ```bash
-# Windows (PowerShell)
-.\run-with-postgres.ps1
+# Windows
+.\run.ps1
 
 # Mac/Linux
-chmod +x run.sh
 ./run.sh
 ```
 
-The backend API will be available at `http://localhost:8081`. The app uses **Supabase** (PostgreSQL) by default—all developers connect to the same shared database.
+The backend API will be available at `http://localhost:8081`. Uses **Supabase** by default—data persists across restarts.
 
 ### Access Points
 

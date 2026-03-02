@@ -1,0 +1,22 @@
+@startuml Customer-SignUp
+actor Customer
+participant "Frontend" as F
+participant "Backend API" as B
+database "Supabase" as DB
+
+Customer -> F: Fill signup form (name, email, password)
+Customer -> F: Submit
+F -> F: Validate password (8+ chars, upper, lower, digit, symbol)
+F -> B: POST /auth/customer/register
+B -> DB: findByEmail
+alt Email exists
+    B --> F: 409 Conflict
+    F --> Customer: Show error
+else Email available
+    B -> B: Hash password (BCrypt)
+    B -> DB: save(customer)
+    DB --> B: OK
+    B --> F: 201 Created
+    F --> Customer: Redirect to Login
+end
+@enduml
