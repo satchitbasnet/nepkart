@@ -6,6 +6,7 @@ NEPKART is a full-stack e-commerce application designed to bridge the gap for th
 
 - **[Use Case Diagrams](docs/USE_CASE_DIAGRAMS.md)** – Frontend and backend use cases for Customer and Admin
 - **[Sequence Diagrams](docs/SEQUENCE_DIAGRAMS.md)** – Sign up, login, cart, checkout, admin flows
+- **[Domain & Database](docs/DOMAIN_AND_DATABASE.md)** – Entities, UML class diagram, ERD, use case–data mapping
 
 ## Project Structure
 

@@ -1,0 +1,83 @@
+@startuml NEPKART-Database-ERD
+' Entity-Relationship Diagram - Database Schema
+!theme plain
+skinparam pagesize 1600x900
+left to right direction
+
+entity products {
+  + id : BIGINT
+  --
+  sku : VARCHAR
+  name : VARCHAR
+  category : VARCHAR
+  price : DECIMAL
+  stock : INT
+  low_stock_threshold : INT
+  weight : DECIMAL
+  origin : VARCHAR
+  description : VARCHAR
+  image_url : TEXT
+}
+
+entity customers {
+  + id : BIGINT
+  --
+  first_name : VARCHAR
+  last_name : VARCHAR
+  email : VARCHAR
+  password_hash : VARCHAR
+  is_active : BOOLEAN
+  created_at : TIMESTAMP
+  phone : VARCHAR
+  address : VARCHAR
+  city : VARCHAR
+  state : VARCHAR
+  zip_code : VARCHAR
+}
+
+entity orders {
+  + id : BIGINT
+  --
+  order_id : VARCHAR
+  customer_id : BIGINT
+  subtotal : DECIMAL
+  shipping_cost : DECIMAL
+  tax : DECIMAL
+  total : DECIMAL
+  order_date : TIMESTAMP
+  status : VARCHAR
+}
+
+entity order_items {
+  + id : BIGINT
+  --
+  order_id : BIGINT
+  product_id : BIGINT
+  quantity : INT
+  price : DECIMAL
+}
+
+entity cart_items {
+  + id : BIGINT
+  --
+  customer_id : BIGINT
+  product_id : BIGINT
+  quantity : INT
+}
+
+entity password_reset_tokens {
+  + id : BIGINT
+  --
+  customer_id : BIGINT
+  token : VARCHAR
+  expires_at : TIMESTAMP
+  used : BOOLEAN
+}
+
+customers ||--o{ orders : "places"
+orders ||--|{ order_items : "contains"
+order_items }o--|| products : "product_id"
+cart_items }o--|| customers : "customer_id"
+cart_items }o--|| products : "product_id"
+password_reset_tokens }o--|| customers : "customer_id"
+@enduml

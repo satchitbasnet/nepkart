@@ -1,0 +1,30 @@
+@startuml NEPKART-DataOperationsMapping
+' Use Case – Data Operations Mapping
+' Columns: Use Case | Service Method | Repos Used | Data Actions
+!theme plain
+skinparam defaultFontSize 10
+skinparam pagesize 1200x1400
+
+title Use Case – Data Operations Mapping
+
+note as N1
+|= Use Case |= Service Method |= Repos Used |= Data Actions |
+| Browse & Search Products | ProductService.getAllProducts(), getProductsByCategory(), searchProducts() | ProductRepository | Read Product |
+| View Product Details | ProductService.getProductById() | ProductRepository | Read Product |
+| Manage Cart (Get) | CartService.getCart() | CartItemRepository | Read CartItem |
+| Manage Cart (Sync) | CartService.syncCart() | CartItemRepository, CustomerRepository, ProductRepository | Create/Update CartItem, Read Customer, Read Product |
+| Manage Cart (Clear) | CartService.clearCart() | CartItemRepository | Delete CartItem |
+| Sign Up | CustomerAuthService.register() | CustomerRepository | Create Customer |
+| Login | CustomerAuthService.authenticate() | CustomerRepository | Read Customer |
+| Logout | (Session invalidate) | — | — |
+| Forgot Password | CustomerAuthService.requestPasswordReset() | CustomerRepository, PasswordResetTokenRepository | Read Customer, Create PasswordResetToken |
+| Reset Password | CustomerAuthService.resetPassword() | CustomerRepository, PasswordResetTokenRepository | Read Customer, Read PasswordResetToken, Update Customer, Update PasswordResetToken |
+| Checkout | OrderService.createOrder() | OrderRepository, CustomerRepository, ProductRepository | Create Order (cascade OrderItem), Read/Create Customer, Read Product, Update Product (decrement stock) |
+| Admin Login | AuthService.authenticate() | — | (Session only, no DB) |
+| Manage Inventory (List) | ProductService.getAllProducts(), getLowStockProducts(), getOutOfStockProducts() | ProductRepository | Read Product |
+| Manage Inventory (CRUD) | ProductService.createProduct(), updateProduct(), deleteProduct() | ProductRepository | Create/Read/Update/Delete Product |
+| View / Update Orders | OrderService.getAllOrders(), getOrderById(), getOrderByOrderId(), updateOrderStatus(), deleteOrder() | OrderRepository | Read Order, Update Order (status), Delete Order |
+| View / Manage Customers | CustomerController.listCustomers(), setActive() | CustomerRepository | Read Customer, Update Customer (isActive) |
+end note
+
+@enduml

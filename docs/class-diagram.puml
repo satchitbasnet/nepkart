@@ -1,0 +1,94 @@
+@startuml NEPKART-Class-Diagram
+' UML Class Diagram - Problem Domain
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam pagesize 1600x900
+left to right direction
+
+class Product {
+  - id: Long
+  - sku: String
+  - name: String
+  - category: String
+  - price: BigDecimal
+  - stock: Integer
+  - lowStockThreshold: Integer
+  - weight: BigDecimal
+  - origin: String
+  - description: String
+  - imageUrl: String
+  --
+  + isOutOfStock(): boolean
+  + isLowStock(): boolean
+  + decrementStock(qty: int): void
+}
+
+class Customer {
+  - id: Long
+  - firstName: String
+  - lastName: String
+  - email: String
+  - passwordHash: String
+  - isActive: boolean
+  - createdAt: LocalDateTime
+  - phone: String
+  - address: String
+  - city: String
+  - state: String
+  - zipCode: String
+  --
+  + addOrder(order: Order): void
+}
+
+class Order {
+  - id: Long
+  - orderId: String
+  - subtotal: BigDecimal
+  - shippingCost: BigDecimal
+  - tax: BigDecimal
+  - total: BigDecimal
+  - orderDate: LocalDateTime
+  - status: OrderStatus
+  --
+  + addOrderItem(item: OrderItem): void
+  + calculateTotal(): void
+}
+
+class OrderItem {
+  - id: Long
+  - quantity: Integer
+  - price: BigDecimal
+  --
+  + getSubtotal(): BigDecimal
+}
+
+class CartItem {
+  - id: Long
+  - quantity: Integer
+}
+
+class PasswordResetToken {
+  - id: Long
+  - token: String
+  - expiresAt: LocalDateTime
+  - used: boolean
+  --
+  + isExpired(): boolean
+}
+
+enum OrderStatus {
+  RECEIVED
+  IN_PROGRESS
+  SHIPPED
+}
+
+Customer "1" --> "*" Order : places
+Order "1" --> "*" OrderItem : contains
+OrderItem "*" --> "1" Product : references
+Order "1" --> "1" Customer : belongs to
+CartItem "*" --> "1" Customer : belongs to
+CartItem "*" --> "1" Product : references
+PasswordResetToken "*" --> "1" Customer : belongs to
+Order ..> OrderStatus : uses
+@enduml
