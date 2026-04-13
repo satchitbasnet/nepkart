@@ -20,9 +20,9 @@ async function http<T>(path: string, init?: RequestInit): Promise<T> {
   
   try {
     const res = await fetch(url, {
-      credentials: "include", // Include cookies for session management
       headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
       ...init,
+      credentials: "include", // must be last so spread init cannot drop session cookies
     });
     
     console.log(`[API] Response status: ${res.status} ${res.statusText} for ${url}`);
