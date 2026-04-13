@@ -14,8 +14,8 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Apply to all API endpoints
-                        // Put your EXACT Vercel URL here (No slash at the very end)
-                        .allowedOrigins("https://nepkart-lemon.vercel.app", "http://localhost:3000", "http://localhost:5173")
+                        // Updated to match your ACTUAL live Vercel URL!
+                        .allowedOrigins("https://nepkart-nu.vercel.app", "http://localhost:3000", "http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
